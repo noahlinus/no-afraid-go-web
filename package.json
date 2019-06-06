@@ -1,0 +1,21 @@
+{
+  "name": "no-afraid-go-web",
+  "version": "1.0.0",
+  "description": "#### Description no-afraid-go-web",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/app.js --watch src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitee.com:linyouyuan/no-afraid-go-web.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0"
+  }
+}
