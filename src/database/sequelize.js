@@ -1,14 +1,4 @@
-const Koa = require('koa');
-
-const app = new Koa();
-
-const bodyParser = require('koa-bodyparser');
-
-const controller = require('./controller');
-
-const Sequelize = require('sequelize');
-
-const config = require('./database/config.js');
+const config = require('./config.js');
 
 const sequelize = new Sequelize(config.database, config.username, config.password, {
   host: config.host,
@@ -51,18 +41,3 @@ Pet.create({
 }).then(p => {
   console.log('created' + JSON.stringify(p));
 }).catch(err => console.error(err));
-
-
-app.use(async (ctx, next) => {
-  if (ctx.request.path === '/') {
-    ctx.response.body = '<h1>Index!</h1>';
-  }
-  next();
-})
-
-app.use(bodyParser());
-
-app.use(controller.routes()).use(controller.allowedMethods())
-
-app.listen(3000);
-console.log('app started at port 3000...');
