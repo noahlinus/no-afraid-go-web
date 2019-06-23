@@ -15,16 +15,10 @@
 
 // httpRequest.get('/')
 
-const testData = {
-  grant_type: 'client_credential',
-  appid: '123',
-  secret: '323',
-}
+const {getWeChatToken} = require('../src/api/wechat')
 
-let paramString = ''
-
-const data = Object.entries(testData)
-  .map(item => item.join('='))
-  .join('&')
-
-console.log(data)
+getWeChatToken().then((value) => {
+  console.log('value', value)
+}).catch(e => {
+  console.error('error', e)
+})

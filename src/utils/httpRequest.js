@@ -1,30 +1,45 @@
-const https = require('http')
+const https = require('https')
 
 // 配置访问代理，主要针对微信
 const proxyOptions = {
-  hostname: 'baidu.com',
+  hostname: 'api.weixin.qq.com',
 }
 
-// 封装HTTP请求
-const httpRequest = {
+const getPathAndParams = (path, params) => `${path}?${
+  Object.entries(params)
+    .map(item => item.join('='))
+    .join('&')
+  }`
+
+// 封装的httpRequest
+class HttpRequest {
+  // GET请求
   get(path, params) {
-    const req = https.request({...proxyOptions, method: 'get', path}, res => {
-      console.log('STATUS: ' + res.statusCode)
-      console.log('HEADERS: ' + JSON.stringify(res.headers))
-      res.setEncoding('utf8')
-      res.on('data', chunk => {
-        console.log('BODY: ' + chunk)
+    return new Promise((resolve, reject) => {
+      const pathAndParams = getPathAndParams(path, params)
+      console.log('pathAndParams',pathAndParams)
+      const req = https.request({ ...proxyOptions, method: 'get',path: pathAndParams }, res => {
+        console.log('STATUS: ' + res.statusCode)
+        console.log('HEADERS: ' + JSON.stringify(res.headers))
+        res.setEncoding('utf8')
+        res.on('data', chunk => {
+          resolve(chunk)
+        })
+        res.on('error', e => {
+          reject(e)
+        })
       })
-      res.on('error', e => {
-        console.log('problem with request: ' + e.message)
+      req.on('error', e => {
+        reject(e)
       })
-    })
-    req.on('error', e => {
-      console.log('problem with request: ' + e.message)
-    })
-    req.end()
-  },
-  post() {},
+      req.end()
+    });
+  }
+
+  // POST请求 时间原因用到再添加
+  post() {
+    // TODO
+  }
 }
 
-module.exports = httpRequest
+module.exports = HttpRequest

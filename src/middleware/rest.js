@@ -1,3 +1,8 @@
+/**
+ * REST请求
+ * @param {*} ctx 
+ * @param {*} next 
+ */
 const rest = async (ctx, next) => {
   ctx.rest = (data) => {
     ctx.response.status = 200;
