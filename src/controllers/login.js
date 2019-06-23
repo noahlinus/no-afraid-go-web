@@ -1,26 +1,45 @@
 const Router = require('koa-router')
 const router = new Router()
 
-router.get('/login', async (ctx, next) => {
-  ctx.response.body = `<h1>Index</h1>
-    <form action="/signin" method="post">
-      <p>Name: <input name="name" value="koa" /></p>
-      <p>Name: <input name="password" value="password" /></p>
-      <p><input type="submit" value="Submit"/></p>
-    </form>
-  `
-})
+// 登录方式
+LoginType = {
+  PASSWORD: 'password', // 用户密码登录
+  CEL: 'cel', // 手机号码登录
+  WE_CHAT: 'we_chat', // 微信登录
+}
 
-router.post('/signin', async (ctx, next) => {
-  const name = ctx.request.body.name || '';
-  const password = ctx.request.body.password || '';
-  console.log(`signin with name: ${name}, password: ${password}`);
-  if (name === 'koa' && password === '12345') {
-    ctx.response.body = `<h1>Welcome, ${name}!</h1>`;
+// 验证账号密码
+const verifyPassWord = async (ctx, next) => {
+  const {username, password} = ctx.request.body
+  console.log(`signin with name: ${username}, password: ${password}`)
+  const {User} = require('../database/model')
+  const user = await User.findAll({
+    where: {
+      username,
+    },
+  })
+
+  if (user.length !== 0 && user[0].password === password) {
+    ctx.rest({success: true, desc: '登录成功'})
   } else {
-    ctx.response.body = `<h1>Login failed!</h1>
-    <p><a href="/">Try again</a></p>`;
+    ctx.rest({success: false, desc: '账号或者密码错误'})
   }
+}
+
+const verifyWeChat = async ctx => {}
+
+// 登录模块
+router.post('/login', async (ctx, next) => {
+  const {loginType} = ctx.request.body
+  switch (loginType) {
+    case LoginType.PASSWORD:
+      await verifyPassWord(ctx)
+      break
+    case LoginType.WE_CHAT:
+      await verifyWeChat()
+      break
+  }
+  await next()
 })
 
-module.exports = router;
+module.exports = router
