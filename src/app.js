@@ -1,28 +1,37 @@
-const Koa = require('koa');
+const Koa = require('koa')
 
-const app = new Koa();
+const app = new Koa()
 
-const bodyParser = require('koa-bodyparser');
+const bodyParser = require('koa-bodyparser')
 
-const controller = require('./controller');
+const controller = require('./controller')
 
-const rest = require('./middleware/rest');
+const rest = require('./middleware/rest')
 
-// 解析主体
-app.use(bodyParser());
+const weChatInit = require('./middleware/weChatInit')
 
-app.use(rest);
+async function main() {
+  // 解析主体
+  app.use(bodyParser())
 
-app.use(async (ctx, next) => {
-  if (ctx.request.path === '/') {
-    ctx.response.body = '<h1>Index!</h1>';
-  }
-  await next();
-})
+  app.use(rest)
 
-// 控制层
-app.use(controller.routes()).use(controller.allowedMethods())
+  app.use(async (ctx, next) => {
+    if (ctx.request.path === '/') {
+      ctx.response.body = '<h1>Index!</h1>'
+    }
+    await next()
+  })
 
-app.listen(8088);
+  // 获取token放入ctx.app里 这里有个定时任务
+  app.use(await weChatInit())
 
-console.log('app started at port 8088...');
+  // 控制层
+  app.use(controller.routes()).use(controller.allowedMethods())
+
+  app.listen(8088)
+
+  console.log('app started at port 8088...')
+}
+
+main()

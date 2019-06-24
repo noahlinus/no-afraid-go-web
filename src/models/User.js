@@ -1,5 +1,5 @@
-const db = require('../database/db');
-const { DataTypes } = db;
+const db = require('../database/db')
+const {DataTypes} = db
 
 module.exports = db.defineModel('users', {
   username: {
@@ -26,4 +26,5 @@ module.exports = db.defineModel('users', {
   country: DataTypes.STRING(100),
   city: DataTypes.STRING(100),
   language: DataTypes.STRING(20),
-});
+  session_key: DataTypes.STRING,
+})

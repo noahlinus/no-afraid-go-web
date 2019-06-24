@@ -10,33 +10,66 @@ const LoginType = {
 
 // 验证账号密码
 const verifyPassWord = async (ctx, next) => {
-  const { username, password } = ctx.request.body
+  const {username, password} = ctx.request.body
   console.log(`login with name: ${username}, password: ${password}`)
-  const { User } = require('../database/model')
-  const user = await User.findAll({
+  const {User} = require('../database/model')
+  const user = await User.findOne({
     where: {
       username,
     },
   })
 
-  if (user.length !== 0 && user[0].password === password) {
-    ctx.rest({ success: true, desc: '登录成功' })
+  if (user.password === password) {
+    ctx.rest({success: true, desc: '登录成功'})
   } else {
-    ctx.rest({ success: false, desc: '账号或者密码错误' })
+    ctx.rest({success: false, desc: '账号或者密码错误'})
   }
 }
 
-const verifyWeChat = async ctx => { }
+// 微信验证
+const verifyWeChat = async ctx => {
+  const {code} = ctx.request.body
+  const {getCode2Session} = require('../api/wechat')
+  const res = await getCode2Session({js_code: code})
+  if (!res.errcode) {
+    const {openid, session_key, unionid} = res
+    const {User} = require('../database/model')
+    const mUser = User.findOne({
+      where: {
+        unionid,
+      },
+    })
+    if (mUser) {
+      mUser.openid = openid
+      mUser.session_key = session_key
+      mUser.unionid = unionid
+      await mUser.save()
+    } else {
+      await User.create({
+        openid,
+        session_key,
+        unionid,
+      })
+    }
+    ctx.rest({
+      success: true,
+      data: {openid, session_key, unionid},
+      desc: '登录成功',
+    })
+  } else {
+    ctx.rest({success: false, errorCode: res.errcode, desc: res.errmsg})
+  }
+}
 
 // 登录模块
 router.post('/login', async (ctx, next) => {
-  const { loginType } = ctx.request.body
+  const {loginType} = ctx.request.body
   switch (loginType) {
     case LoginType.PASSWORD:
       await verifyPassWord(ctx)
       break
     case LoginType.WE_CHAT:
-      await verifyWeChat()
+      await verifyWeChat(ctx)
       break
   }
   await next()
