@@ -26,8 +26,6 @@ async function main() {
   // 获取token放入ctx.app里 这里有个定时任务
   app.use(await weChatInit())
 
-  app.use()
-
   // 控制层
   app.use(controller.routes()).use(controller.allowedMethods())
 

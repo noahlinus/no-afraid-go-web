@@ -3,8 +3,8 @@ const EXPIRES_IN = 7000
 
 // 从数据库获取数据
 const getWeChatModel = async () => {
-  const {User} = require('../database/model')
-  const data = await User.findAll()
+  const {WeChat} = require('../database/model')
+  const data = await WeChat.findAll()
   return data
 }
 
@@ -27,8 +27,8 @@ const saveToken = async (weChats, token, date) => {
     weChat.access_token = token
     await weChat.save()
   } else {
-    const {User} = require('../database/model')
-    await User.create({
+    const {WeChat} = require('../database/model')
+    await WeChat.create({
       date: date,
       access_token: token,
     })
