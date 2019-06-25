@@ -1,5 +1,6 @@
 const Router = require('koa-router')
 const router = new Router()
+const { generateToken } = require('../utils/jwt')
 
 // 登录方式
 const LoginType = {
@@ -9,10 +10,10 @@ const LoginType = {
 }
 
 // 验证账号密码
-const verifyPassWord = async (ctx, next) => {
-  const {username, password} = ctx.request.body
+const verifyPassWord = async ctx => {
+  const { username, password } = ctx.request.body
   console.log(`login with name: ${username}, password: ${password}`)
-  const {User} = require('../database/model')
+  const { User } = require('../database/model')
   const user = await User.findOne({
     where: {
       username,
@@ -20,20 +21,21 @@ const verifyPassWord = async (ctx, next) => {
   })
 
   if (user.password === password) {
-    ctx.rest({success: true, desc: '登录成功'})
+    const token = await generateToken({ unionid })
+    ctx.rest({ success: true, data: { token }, desc: '登录成功' })
   } else {
-    ctx.rest({success: false, desc: '账号或者密码错误'})
+    ctx.rest({ success: false, desc: '账号或者密码错误' })
   }
 }
 
 // 微信验证
 const verifyWeChat = async ctx => {
-  const {code} = ctx.request.body
-  const {getCode2Session} = require('../api/wechat')
-  const res = await getCode2Session({js_code: code})
+  const { code } = ctx.request.body
+  const { getCode2Session } = require('../api/wechat')
+  const res = await getCode2Session({ js_code: code })
   if (!res.errcode) {
-    const {openid, session_key, unionid} = res
-    const {User} = require('../database/model')
+    const { openid, session_key, unionid } = res
+    const { User } = require('../database/model')
     const mUser = User.findOne({
       where: {
         unionid,
@@ -51,19 +53,24 @@ const verifyWeChat = async ctx => {
         unionid,
       })
     }
-    ctx.rest({
-      success: true,
-      data: {openid, session_key, unionid},
-      desc: '登录成功',
-    })
+    try {
+      const token = await generateToken({ unionid })
+      ctx.rest({
+        success: true,
+        data: { openid, unionid, token },
+        desc: '登录成功',
+      })
+    } catch (error) {
+      ctx.rest({ success: false, desc: error })
+    }
   } else {
-    ctx.rest({success: false, errorCode: res.errcode, desc: res.errmsg})
+    ctx.rest({ success: false, errorCode: res.errcode, desc: res.errmsg })
   }
 }
 
 // 登录模块
 router.post('/login', async (ctx, next) => {
-  const {loginType} = ctx.request.body
+  const { loginType } = ctx.request.body
   switch (loginType) {
     case LoginType.PASSWORD:
       await verifyPassWord(ctx)
