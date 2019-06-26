@@ -2,8 +2,8 @@ const Router = require('koa-router')
 const router = new Router()
 
 // 验证token是否过期
-router.post('/checkToken' ,async (ctx, next) => {
-  if (ctx.user && ctx.user.unionid) {
+router.get('/checkToken', async (ctx, next) => {
+  if (ctx.user && (ctx.user.unionid || ctx.user.username)) {
     ctx.rest({ success: true, desc: 'token未过期' })
     await next()
   } else {

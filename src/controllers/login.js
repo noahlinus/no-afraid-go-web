@@ -14,17 +14,21 @@ const verifyPassWord = async ctx => {
   const { username, password } = ctx.request.body
   console.log(`login with name: ${username}, password: ${password}`)
   const { User } = require('../database/model')
-  const user = await User.findOne({
-    where: {
-      username,
-    },
-  })
-
-  if (user.password === password) {
-    const token = await generateToken({ unionid })
-    ctx.rest({ success: true, data: { token }, desc: '登录成功' })
-  } else {
-    ctx.rest({ success: false, desc: '账号或者密码错误' })
+  try {
+    const user = await User.findOne({
+      where: {
+        username,
+      },
+    })
+    if (user && user.password === password) {
+      const token = await generateToken({ username })
+      ctx.rest({ success: true, data: { token }, desc: '登录成功' })
+    } else {
+      ctx.rest({ success: false, desc: '账号或者密码错误' })
+    }
+  } catch (error) {
+    ctx.rest({ success: false, desc: error }, 500)
+    console.error(error)
   }
 }
 
@@ -77,6 +81,9 @@ router.post('/login', async (ctx, next) => {
       break
     case LoginType.WE_CHAT:
       await verifyWeChat(ctx)
+      break
+    default:
+      ctx.rest({ success: false, desc: '数据格式不对' })
       break
   }
   await next()

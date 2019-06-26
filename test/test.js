@@ -1,24 +1,23 @@
-// const model = require('../src/database/model.js');
+const model = require('../src/database/model.js');
 
-// User = model.User;
+User = model.User;
 
-// (async () => {
-//   const user = await User.create({
-//     username: 'John',
-//     gender: 2,
-//     email: '66666666@qq.com',
-//     password: 'hahaha'
-//   });
-// })();
+(async () => {
+  const user = await User.create({
+    username: 'John',
+    email: '66666666@qq.com',
+    password: 'hahaha'
+  });
+})();
 
 // const httpRequest = require('../src/utils/httpRequest.js')
 
 // httpRequest.get('/')
 
-const {getWeChatToken} = require('../src/api/wechat')
+// const {getWeChatToken} = require('../src/api/wechat')
 
-getWeChatToken().then((value) => {
-  console.log('value', value)
-}).catch(e => {
-  console.error('error', e)
-})
+// getWeChatToken().then((value) => {
+//   console.log('value', value)
+// }).catch(e => {
+//   console.error('error', e)
+// })
