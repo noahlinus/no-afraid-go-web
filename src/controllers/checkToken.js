@@ -3,7 +3,7 @@ const router = new Router()
 
 // 验证token是否过期
 router.get('/checkToken', async (ctx, next) => {
-  if (ctx.user && (ctx.user.unionid || ctx.user.username)) {
+  if (ctx.user && (ctx.user.openid || ctx.user.username)) {
     ctx.rest({ success: true, desc: 'token未过期' })
     await next()
   } else {

@@ -37,31 +37,54 @@ const verifyWeChat = async ctx => {
   const { code } = ctx.request.body
   const { getCode2Session } = require('../api/wechat')
   const res = await getCode2Session({ js_code: code })
+  // 有没有用户信息，昵称头像等
+  let hasUserInfo = false
   if (!res.errcode) {
-    const { openid, session_key, unionid } = res
+    const { openid, session_key } = res
     const { User } = require('../database/model')
-    const mUser = User.findOne({
+    const mUser = await User.findOne({
       where: {
-        unionid,
+        openid,
       },
     })
-    if (mUser) {
-      mUser.openid = openid
+    if (mUser && mUser.openid) {
+      if (mUser.nickName) {
+        hasUserInfo = true
+      }
       mUser.session_key = session_key
-      mUser.unionid = unionid
       await mUser.save()
     } else {
       await User.create({
         openid,
         session_key,
-        unionid,
       })
     }
     try {
-      const token = await generateToken({ unionid })
+      const token = await generateToken({ openid })
+      let data = { token, hasUserInfo }
+      if (hasUserInfo) {
+        const {
+          nickName,
+          avatarUrl,
+          gender,
+          country,
+          province,
+          city,
+          language,
+        } = mUser
+        data.userInfo = {
+          nickName,
+          avatarUrl,
+          gender,
+          country,
+          province,
+          city,
+          language,
+        }
+      }
       ctx.rest({
         success: true,
-        data: { openid, unionid, token },
+        data,
         desc: '登录成功',
       })
     } catch (error) {
