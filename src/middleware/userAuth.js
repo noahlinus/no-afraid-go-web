@@ -28,7 +28,7 @@ const userAuth = async (ctx, next) => {
     }
     ctx.rest({ success: false, errorCode: 401, desc: '需要重新登录授权' }, 401)
   } catch (error) {
-    ctx.rest({ success: false, errorCode: 500, desc: error }, 500)
+    ctx.rest({ success: false, errorCode: 401, desc: '需要重新登录授权' }, 401)
   }
 }
 

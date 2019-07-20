@@ -1,12 +1,5 @@
 const jwt = require('jsonwebtoken')
-const fs = require('fs')
-const path = require('path')
-const privateKey = fs.readFileSync(
-  path.join(__dirname, '../../rsa-key/rsa_private_key.pem'),
-) // 私钥
-const publicKey = fs.readFileSync(
-  path.join(__dirname, '../../rsa-key/rsa_public_key.pem'),
-) // 公钥
+const key = 'ting.ting@huang_GO!GO!GO!!!'
 
 // 生成token
 const generateToken = data =>
@@ -15,9 +8,8 @@ const generateToken = data =>
       {
         data,
       },
-      privateKey,
+      key,
       {
-        algorithm: 'RS256',
         expiresIn: '2 days',
       },
       (err, token) => {
@@ -32,7 +24,7 @@ const generateToken = data =>
 // 验证Token
 const verifyToken = token =>
   new Promise((resolve, reject) => {
-    jwt.verify(token, publicKey, { algorithms: ['RS256'] }, (err, payload) => {
+    jwt.verify(token, key, (err, payload) => {
       if (!err) {
         return resolve(payload)
       }
