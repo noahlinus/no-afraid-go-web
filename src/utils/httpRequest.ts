@@ -1,24 +1,20 @@
-const https = require('https')
+import https from 'https'
+import weChat from '@/const/weChat'
 
-// 配置访问代理，主要针对微信
-const proxyOptions = {
-  hostname: 'api.weixin.qq.com',
-}
-
-const getPathAndParams = (path, params) =>
+const getPathAndParams = (path: string, params: any) =>
   `${path}?${Object.entries(params)
     .map(item => item.join('='))
     .join('&')}`
 
 // 封装的httpRequest
-class HttpRequest {
+const httpRequest = {
   // GET请求
-  get(path, params) {
+  get(path: string, params: any) {
     return new Promise((resolve, reject) => {
       const pathAndParams = getPathAndParams(path, params)
       console.log('pathAndParams', pathAndParams)
       const req = https.request(
-        {...proxyOptions, method: 'get', path: pathAndParams},
+        { hostname: weChat.hostUrl, method: 'get', path: pathAndParams },
         res => {
           console.log('STATUS: ' + res.statusCode)
           console.log('HEADERS: ' + JSON.stringify(res.headers))
@@ -36,12 +32,12 @@ class HttpRequest {
       })
       req.end()
     })
-  }
+  },
 
   // POST请求 时间原因用到再添加
   post() {
     // TODO
-  }
+  },
 }
 
-module.exports = HttpRequest
+export default httpRequest

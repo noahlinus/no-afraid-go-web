@@ -1,8 +1,11 @@
-const jwt = require('jsonwebtoken')
-const key = 'ting.ting@huang_GO!GO!GO!!!'
+import jwt from 'jsonwebtoken'
+import Token from '@/interfaces/Token'
+
+// token 秘钥
+const key = process.env.TOKEN_KEY || ''
 
 // 生成token
-const generateToken = data =>
+const generateToken = (data: Token) =>
   new Promise((resolve, reject) => {
     jwt.sign(
       {
@@ -22,7 +25,7 @@ const generateToken = data =>
   })
 
 // 验证Token
-const verifyToken = token =>
+const verifyToken = (token: string) =>
   new Promise((resolve, reject) => {
     jwt.verify(token, key, (err, payload) => {
       if (!err) {
@@ -32,7 +35,4 @@ const verifyToken = token =>
     })
   })
 
-module.exports = {
-  generateToken,
-  verifyToken,
-}
+export { generateToken, verifyToken }

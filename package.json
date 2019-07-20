@@ -1,26 +1,40 @@
 {
-  "name": "no-afraid-go-web",
+  "name": "no-afraid-go-web-ts",
   "version": "1.0.0",
-  "description": "#### Description no-afraid-go-web",
+  "description": "不怕丢web服务",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/app.js --watch src",
-    "init-db": "node src/database/init_db.js",
-    "test": "node test/test.js"
+    "start": "nodemon --watch 'src/**/*' -e ts,tsx --exec 'ts-node' ./src/server.ts",
+    "production": "pm2 start --env production",
+    "build": "tsc",
+    "build-watch": "tsc --w",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@gitee.com:linyouyuan/no-afraid-go-web.git"
-  },
-  "author": "linyouyuan",
+  "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/jsonwebtoken": "^8.3.2",
+    "@types/koa-bodyparser": "^4.3.0",
+    "dotenv": "^8.0.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
-    "mysql": "^2.17.1",
-    "mysql2": "^1.6.5",
-    "sequelize": "^5.8.7"
+    "mongoose": "^5.6.4",
+    "reflect-metadata": "^0.1.13",
+    "tslib": "^1.10.0",
+    "typegoose": "^5.8.0"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.49",
+    "@types/koa-router": "^7.0.42",
+    "@types/mongodb": "^3.1.28",
+    "@types/mongoose": "^5.5.8",
+    "@types/node": "^12.6.2",
+    "nodemon": "^1.19.1",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
   }
 }
