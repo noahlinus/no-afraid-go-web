@@ -9,15 +9,15 @@ const getPathAndParams = (path: string, params: any) =>
 // 封装的httpRequest
 const httpRequest = {
   // GET请求
-  get(path: string, params: any) {
+  get<T>(path: string, params: any): Promise<T> {
     return new Promise((resolve, reject) => {
       const pathAndParams = getPathAndParams(path, params)
-      console.log('pathAndParams', pathAndParams)
+      // console.log('pathAndParams', pathAndParams)
       const req = https.request(
         { hostname: weChat.hostUrl, method: 'get', path: pathAndParams },
         res => {
-          console.log('STATUS: ' + res.statusCode)
-          console.log('HEADERS: ' + JSON.stringify(res.headers))
+          // console.log('STATUS: ' + res.statusCode)
+          // console.log('HEADERS: ' + JSON.stringify(res.headers))
           res.setEncoding('utf8')
           res.on('data', chunk => {
             resolve(JSON.parse(chunk))
@@ -35,9 +35,9 @@ const httpRequest = {
   },
 
   // POST请求 时间原因用到再添加
-  post() {
-    // TODO
-  },
+  // post<T>() {
+  //   // TODO
+  // },
 }
 
 export default httpRequest

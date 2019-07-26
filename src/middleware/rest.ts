@@ -1,4 +1,4 @@
-import Context from '@/interfaces/Context'
+import { Context } from 'koa'
 
 /**
  * REST请求
@@ -14,4 +14,4 @@ const rest = async (ctx: Context, next: any) => {
   await next()
 }
 
-module.exports = rest
+export default rest

@@ -12,7 +12,12 @@
       "args": ["${workspaceFolder}/src/server.ts"],
       "env": {
         "NODE_ENV": "development"
-      }
+      },
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
