@@ -1,68 +1,74 @@
-import EquipmentModel from '@/models/Equipment'
-import UserModel from '@/models/User'
-import Router from 'koa-router'
-const router = new Router()
+import EquipmentModel from "@/models/Equipment";
+import UserModel from "@/models/User";
+import Router from "koa-router";
+const router = new Router();
 
 interface IAddEquipmentReq {
-  eqId: string
+  eqId: string;
 }
 
 interface IGetEquipmentRes {
-  eqId?: string
+  eqId?: string; // 设备ID
 
-  name?: string // 设备名称
+  name?: string; // 设备名称
 
-  desc?: string // 设备描述信息}
+  desc?: string; // 设备描述信息}
 }
 
 // 添加设备信息
-router.post('/addEquipment', async (ctx, next) => {
-  const { userId } = ctx.token
-  let { eqId }: IAddEquipmentReq = ctx.request.body
+router.post("/addEquipment", async (ctx, next) => {
+  const { userId } = ctx.token;
+  let { eqId }: IAddEquipmentReq = ctx.request.body;
   try {
-    const user = await UserModel.findOne(userId)
-    if (user) {
-      let eqIds: string[] = user.equipment || []
-      eqIds.push(eqId)
-      eqIds = [...new Set(eqIds)]
-      user.equipment = eqIds
-      await user.save()
-      ctx.rest({ success: true, desc: '保存成功' })
+    const user = await UserModel.findOne({_id: userId});
+    if (user && eqId) {
+      let eqIds: string[] = user.equipment || [];
+      if (eqIds.some(item => item === eqId)) {
+        ctx.rest({ success: true, desc: "已经存在此用户" });
+      } else {
+        eqIds.push(eqId);
+        eqIds = [...new Set(eqIds)];
+        user.equipment = eqIds;
+        await user.save();
+        ctx.rest({ success: true, desc: "保存成功" });
+      }
+    } else {
+      ctx.rest({ success: false, desc: "找不到用户设备" });
     }
-    ctx.rest({ success: true, desc: '未找到用户' })
   } catch (error) {
-    ctx.rest({ success: true, desc: error })
+    ctx.rest({ success: false, desc: error });
   }
-  await next()
-})
+  await next();
+});
 
-router.get('/getEquipment', async (ctx, next) => {
-  const { userId } = ctx.token
+router.get("/getEquipment", async (ctx, next) => {
+  const { userId } = ctx.token;
   try {
-    const user = await UserModel.findOne(userId)
+    const user = await UserModel.findOne({_id: userId});
     if (user) {
-      const { equipment } = user
+      const { equipment } = user;
       if (equipment) {
         const res = await EquipmentModel.find({
-          $or: equipment.map(item => ({ _id: item })),
-        })
-        let data: Array<IGetEquipmentRes> = []
+          $or: equipment.map(item => ({ _id: item }))
+        });
+        let data: Array<IGetEquipmentRes> = [];
         if (res) {
           data = res.map(item => ({
             eqId: item._id,
             name: item.name,
-            desc: item.desc,
-          }))
+            desc: item.desc
+          }));
         }
-        ctx.rest({ success: true, data })
+        ctx.rest({ success: true, data });
       }
-      ctx.rest({ success: true, data: [] })
+      ctx.rest({ success: true, data: [] });
+    } else {
+      ctx.rest({ success: true, desc: "未找设备" });
     }
-    ctx.rest({ success: false, desc: '未找到用户' })
   } catch (error) {
-    ctx.rest({ success: true, desc: error })
+    ctx.rest({ success: true, desc: error });
   }
-  await next()
-})
+  await next();
+});
 
-export default router
+export default router;
