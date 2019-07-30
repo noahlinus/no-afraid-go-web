@@ -24,9 +24,11 @@
     "reflect-metadata": "^0.1.13",
     "tslib": "^1.10.0",
     "typegoose": "^5.8.0",
+    "uuid": "^3.3.2",
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@types/uuid": "^3.4.5",
     "@types/dotenv": "^6.1.1",
     "@types/jsonwebtoken": "^8.3.2",
     "@types/koa": "^2.0.49",

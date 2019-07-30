@@ -43,6 +43,9 @@ export class User extends Typegoose {
 
   @arrayProp({ items: String })
   equipment?: string[] // 存放拥有设备的id
+
+  @prop()
+  eqId?: string // 生成自身的微信设备id
 }
 
 export default new User().getModelForClass(User)

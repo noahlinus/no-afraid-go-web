@@ -1,19 +1,23 @@
 import { Typegoose, prop } from 'typegoose'
 
 /**
- * 设备是信息
+ * 设备的信息
  */
 class Equipment extends Typegoose {
+  @prop({ unique: true })
+  eqId?: string // 设备id
+
   @prop()
-  uuid?: string
+  type?: string // 设备类型
 
   @prop()
   name?: string // 设备名称
 
   @prop()
   desc?: string // 设备描述信息
+
+  @prop()
+  imgUrl?: string // 设备图片地址
 }
 
-const EquipmentModel = new Equipment().getModelForClass(Equipment)
-
-export default EquipmentModel
+export default new Equipment().getModelForClass(Equipment)
