@@ -55,17 +55,14 @@ router.get('/getUserInfo', async (ctx, next) => {
   await next()
 })
 
-router.get('/getUserScope', async (ctx, next) => {
+router.get('/getUserEqId', async (ctx, next) => {
   const { userId } = ctx.token
   try {
     const user = await UserModel.findOne({ _id: userId })
-    if (user) {
-      const equipment = await EquipmentModel.findOne({ eqId: user.eqId })
-      if (equipment) {
-        ctx.rest({ success: true, data: equipment.eqId })
-      } else {
-        ctx.rest({ success: false, desc: '找不到设备' })
-      }
+    if (user && user.eqId) {
+      ctx.rest({ success: true, data: user.eqId })
+    } else {
+      ctx.rest({ success: false, desc: '找不到设备' })
     }
   } catch (error) {
     ctx.rest({ success: false, desc: error })

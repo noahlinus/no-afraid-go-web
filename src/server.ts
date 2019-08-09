@@ -1,12 +1,13 @@
 import 'module-alias/register'
 
-import Koa, { Context } from 'koa'
+import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import mongoose from 'mongoose'
 import { MONGODB_URI } from './utils/secrets'
 import WeChatInit from './config/WeChatInit'
 import controller from './utils/controller'
 import rest from './middleware/rest'
+import connectSocket from './config/WebSocketGo'
 
 const mongoUrl = MONGODB_URI
   // 设置Mongoose Promise
@@ -44,7 +45,9 @@ async function main() {
   // 控制层
   app.use(controller.routes()).use(controller.allowedMethods())
 
-  app.listen(8088)
+  const server = app.listen(8088)
+
+  connectSocket(server)
 
   console.log('Server running on port 8088')
 }

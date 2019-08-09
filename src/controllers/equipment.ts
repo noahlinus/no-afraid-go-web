@@ -34,6 +34,13 @@ router.post('/addEquipment', async (ctx, next) => {
         eqIds.push(eqId)
         user.equipment = eqIds
         await user.save()
+        let eqRes = await EquipmentModel.findOne({ eqId })
+        if (eqRes) {
+          const owner = eqRes.owner || []
+          owner.push(userId)
+          eqRes.owner = owner
+          eqRes.save()
+        }
         ctx.rest({ success: true, desc: '保存成功' })
       }
     } else {

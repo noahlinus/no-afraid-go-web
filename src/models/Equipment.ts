@@ -1,4 +1,4 @@
-import { Typegoose, prop } from 'typegoose'
+import { Typegoose, prop, arrayProp } from 'typegoose'
 
 /**
  * 设备的信息
@@ -18,6 +18,9 @@ class Equipment extends Typegoose {
 
   @prop()
   imgUrl?: string // 设备图片地址
+
+  @arrayProp({ items: String })
+  owner?: string[] // 设备拥有者
 }
 
 export default new Equipment().getModelForClass(Equipment)
