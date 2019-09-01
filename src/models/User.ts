@@ -23,16 +23,16 @@ export class UserInfo extends Typegoose {
 
 // 用户数据
 export class User extends Typegoose {
-  @prop({ unique: true })
+  @prop({ unique: true, sparse: true })
   openid?: string // 微信的openId
 
-  @prop({ unique: true })
+  @prop({ unique: true, sparse: true })
   username?: string // 用户名
 
-  @prop({ unique: true })
+  @prop({ unique: true, sparse: true })
   cel?: string // 电话
 
-  @prop({ unique: true })
+  @prop({ unique: true, sparse: true })
   email?: string // 邮箱
 
   @prop()
