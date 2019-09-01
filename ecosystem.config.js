@@ -20,14 +20,19 @@ module.exports = {
     },
   ],
 
-  deploy : {
-    production : {
-      user : 'root',
-      host : '111.230.28.25',
-      ref  : 'origin/master',
-      repo : 'git@gitee.com:linyouyuan/no-afraid-go-web.git',
-      path : '/root/project/no-afraid-go-web',
-      'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
-    }
-  }
+  deploy: {
+    production: {
+      user: 'root',
+      host: '111.230.28.25',
+      port: '22',
+      ref: 'origin/master',
+      repo: 'git@gitee.com:linyouyuan/no-afraid-go-web.git',
+      path: '/root/project/no-afraid-go-web',
+      'post-deploy':
+        'npm install && pm2 reload ecosystem.config.js --env production',
+      env: {
+        NODE_ENV: 'production',
+      },
+    },
+  },
 }
