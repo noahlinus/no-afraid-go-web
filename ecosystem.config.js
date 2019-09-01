@@ -25,8 +25,8 @@ module.exports = {
       user : 'root',
       host : '111.230.28.25',
       ref  : 'origin/master',
-      repo : 'git@github.com:repo.git',
-      path : '/var/www/production',
+      repo : 'git@gitee.com:linyouyuan/no-afraid-go-web.git',
+      path : '/root/project/no-afraid-go-web',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
     }
   }
