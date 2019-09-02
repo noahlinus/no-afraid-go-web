@@ -29,7 +29,7 @@ module.exports = {
       repo: 'git@gitee.com:linyouyuan/no-afraid-go-web.git',
       path: '/root/project/no-afraid-go-web',
       'post-deploy':
-        'npm install && (pm2 reload ecosystem.config.js --env production ||pm2 start ecosystem.config.js --env production)',
+        'npm install && pm2 reload ecosystem.config.js --env production',
       env: {
         NODE_ENV: 'production',
       },
