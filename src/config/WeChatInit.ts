@@ -22,6 +22,7 @@ class WeChatInit {
 
   private async saveWxToken() {
     const res = await WxTokenModel.findOne()
+    console.log('WxTokenModel', res)
     if (res && this.wxToken) {
       res.access_token = this.wxToken.access_token
       res.date = Date.now()
@@ -39,6 +40,7 @@ class WeChatInit {
   private async queryWxToken() {
     try {
       const res = await getWeChatToken()
+      console.log('getWeChatToken', res)
       if (res && !res.errmsg) {
         this.wxToken = res
         this.saveWxToken()
