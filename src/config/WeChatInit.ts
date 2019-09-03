@@ -60,6 +60,8 @@ class WeChatInit {
   async init() {
     try {
       const res = await WxTokenModel.findOne()
+      console.log('WxTokenModel init', res)
+
       if (res && res.date) {
         this.wxToken = res
         const now = Date.now()
