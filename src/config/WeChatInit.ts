@@ -45,6 +45,7 @@ class WeChatInit {
       }
     } catch (error) {
       logger.error(error)
+      console.error(error)
     }
   }
 
@@ -72,6 +73,7 @@ class WeChatInit {
       }
     } catch (error) {
       logger.error(error)
+      console.error(error)
       await this.start()
     }
   }
