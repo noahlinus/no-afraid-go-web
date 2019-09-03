@@ -25,7 +25,6 @@ const onClose = () => {
 
 const onError = (err: Error) => {
   logger.error(err)
-  console.error(err)
 }
 
 const sendMessage = (userIds: string[] = [], data: BaseWebSocket.Data) => {

@@ -22,7 +22,6 @@ class WeChatInit {
 
   private async saveWxToken() {
     const res = await WxTokenModel.findOne()
-    console.log('WxTokenModel', res)
     if (res && this.wxToken) {
       res.access_token = this.wxToken.access_token
       res.date = Date.now()
@@ -47,7 +46,6 @@ class WeChatInit {
       }
     } catch (error) {
       logger.error(error)
-      console.error(error)
     }
   }
 
@@ -60,8 +58,6 @@ class WeChatInit {
   async init() {
     try {
       const res = await WxTokenModel.findOne()
-      console.log('WxTokenModel init', res)
-
       if (res && res.date) {
         this.wxToken = res
         const now = Date.now()
@@ -77,7 +73,6 @@ class WeChatInit {
       }
     } catch (error) {
       logger.error(error)
-      console.error(error)
       await this.start()
     }
   }
