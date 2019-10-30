@@ -5,6 +5,7 @@ import Token from '@/interfaces/Token'
 import logger from '@/utils/logger'
 import EquipmentModel from '@/models/Equipment'
 import UserModel from '@/models/User'
+import url from 'url'
 
 class WebSocket extends BaseWebSocket {
   userId?: string
@@ -45,7 +46,8 @@ const checkToken = async (token: string) => {
 }
 
 const onConnection = async (ws: WebSocket) => {
-  console.log(onConnection, ws)
+  console.log('WebSocket', ws.protocol)
+
   const token = await checkToken(ws.protocol)
   if (token) {
     ws.userId = token.userId
@@ -64,6 +66,10 @@ const onConnection = async (ws: WebSocket) => {
 
 function connectSocket(server: Server) {
   wss = new WebSocketServer({ server })
+  server.on('upgrade', request => {
+    const pathname = url.parse(request.url).pathname
+    console.log(pathname)
+  })
   wss.on('connection', onConnection)
 }
 
