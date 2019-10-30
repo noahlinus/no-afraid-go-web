@@ -45,6 +45,7 @@ const checkToken = async (token: string) => {
 }
 
 const onConnection = async (ws: WebSocket) => {
+  console.log(onConnection, ws)
   const token = await checkToken(ws.protocol)
   if (token) {
     ws.userId = token.userId
