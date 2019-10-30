@@ -66,11 +66,15 @@ const onConnection = async (ws: WebSocket) => {
 
 function connectSocket(server: Server) {
   wss = new WebSocketServer({ server })
-  server.on('upgrade', request => {
-    const pathname = url.parse(request.url).pathname
-    console.log(pathname)
-  })
   wss.on('connection', onConnection)
+  server.on('upgrade', (request, socket, head) => {
+    const pathname = url.parse(request.url).pathname
+    if (pathname === '/websocket/location') {
+      wss.handleUpgrade(request, socket, head, ws => {
+        wss.emit('connection', ws, request)
+      })
+    }
+  })
 }
 
 export default connectSocket
